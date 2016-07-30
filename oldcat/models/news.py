@@ -8,8 +8,8 @@ class News(peewee.Model):
     id = peewee.PrimaryKeyField()
     frm = peewee.CharField()
     title = peewee.CharField()
-    article = peewee.CharField()
-    keywords = peewee.CharField()
+    article = peewee.CharField(10240)
+    keywords = peewee.CharField(default="")
     update_time = peewee.DateTimeField()
 
     class Meta(object):
@@ -18,4 +18,6 @@ class News(peewee.Model):
 
 
 if __name__ == "__main__":
+    # python -m oldcat.models.news
+
     News.create_table()
