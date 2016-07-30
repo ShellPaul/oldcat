@@ -42,21 +42,36 @@ class NewsSpider(Spider):
     def parse_toutiao_search(self, response):
         logger.info("parse toutiao search: %s" % response.url)
         pages = json.loads(response.body)['data']
-        for page in pages:
-            article_url = page['article_url']
-            share_url = page['share_url']
-            if not page['has_video'] and 'toutiao.com' in share_url:
-                yield Request(page['share_url'], callback=self.parse_toutiao_page,
-                              meta={'frm': article_url})
-                break
+        yield self.find_result(pages, 0)
+
+    def find_result(self, pages, i):
+        if i >= len(pages):
+            return None
+        page = pages[i]
+        article_url = page['article_url']
+        display_url = page['display_url']
+        share_url = page['share_url']
+        logger.info("pos [%d] of pages: <%s>" % (i, share_url))
+        if not page['has_video'] and 'toutiao.com' in share_url:
+            return Request(share_url, callback=self.parse_toutiao_page,
+                           meta={'frm': article_url, 'pages': pages, 'pos': i})
+        else:
+            return self.find_result(pages, i+1)
 
     def parse_toutiao_page(self, response):
+        if "toutiao.com" not in response.url:
+            yield self.find_result(response.meta['pages'], response.meta['pos']+1)
+            return
         logger.info("parse toutiao page: %s" % response.url)
         html = etree.HTML(response.body)
         item = NewsItem()
         item['url'] = response.meta['frm']
         item['title'] = html.xpath("//h1[@class='title']/text()")[0]
         item['created'] = html.xpath("//span[@class='time']/text()")[0]
-        item['content'] = html.xpath("normalize-space(//div[@class='article-content'])")
+        texts = html.xpath("//div[@class='article-content']//p/text()")
+        texts = filter(None, (text.strip() for text in texts))
+        imgs = html.xpath("//div[@class='article-content']//p/img/@src")
+        imgs = map(response.urljoin, filter(None, (src.strip() for src in imgs)))
+        item['content'] = json.dumps({"texts": texts, "imgs": imgs})
         # logger.info(json.dumps(dict(item), indent=4))
         yield item
