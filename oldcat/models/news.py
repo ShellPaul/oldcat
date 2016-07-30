@@ -6,7 +6,7 @@ from ..ocutils.db_connection import mysql
 
 class News(peewee.Model):
     id = peewee.PrimaryKeyField()
-    frm = peewee.CharField()
+    frm = peewee.CharField(191, unique=True)
     title = peewee.CharField()
     article = peewee.CharField(10240)
     keywords = peewee.CharField(default="")

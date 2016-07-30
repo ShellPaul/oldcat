@@ -23,7 +23,7 @@ class NewsSpider(Spider):
     toutiao_url_pattern = re.compile(r'href="(/group/\d+/)"')
 
     def __init__(self):
-        self.download_delay = 30
+        self.download_delay = 1
         super(NewsSpider, self).__init__()
 
     def start_requests(self):
@@ -34,7 +34,7 @@ class NewsSpider(Spider):
         title_list = self.n360_th_pattern.findall(response.body)[0]
         title_list = ast.literal_eval(title_list)
         keywords = [ast.literal_eval("u'%s'" % block["keyword"]) for block in title_list]
-        logger.info("title list:\n%s" % json.dumps(keywords, indent=4))
+        # logger.info("title list:\n%s" % json.dumps(keywords, indent=4))
         for keyword in keywords:
             url = self.toutiao_search.format(keyword=keyword.encode("utf-8"))
             yield Request(url, callback=self.parse_toutiao_search)
@@ -43,10 +43,11 @@ class NewsSpider(Spider):
         logger.info("parse toutiao search: %s" % response.url)
         pages = json.loads(response.body)['data']
         for page in pages:
-            if not page['has_video']:
-                url = page['share_url']
-                yield Request(url, callback=self.parse_toutiao_page,
-                              meta={'frm': page['article_url']})
+            article_url = page['article_url']
+            share_url = page['share_url']
+            if not page['has_video'] and 'toutiao.com' in share_url:
+                yield Request(page['share_url'], callback=self.parse_toutiao_page,
+                              meta={'frm': article_url})
                 break
 
     def parse_toutiao_page(self, response):
@@ -57,5 +58,5 @@ class NewsSpider(Spider):
         item['title'] = html.xpath("//h1[@class='title']/text()")[0]
         item['created'] = html.xpath("//span[@class='time']/text()")[0]
         item['content'] = html.xpath("normalize-space(//div[@class='article-content'])")
-        logger.info(json.dumps(dict(item), indent=4))
+        # logger.info(json.dumps(dict(item), indent=4))
         yield item
