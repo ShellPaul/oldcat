@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block title %}{{ data.title }}{% endblock %}
+{% block body %}
+    <h1>{{ data.title }}</h1>
+    {% for src in data.content.imgs %}
+        <p><img src="{{ src }}" /></p>
+    {% endfor %}
+    {% for p in data.content.texts %}
+        <p>{{ p }}</p>
+    {% endfor %}
+{% endblock %}
