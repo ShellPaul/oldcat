@@ -9,3 +9,8 @@ app = flask.Flask(__name__)
 set_app_regex_convert(app)
 app.register_blueprint(index)
 app.register_blueprint(news)
+
+
+@app.route("/")
+def redirect_index():
+    return flask.redirect(index.url_prefix)

@@ -17,7 +17,14 @@ class News(peewee.Model):
         db_table = "news"
 
 
+def hot_news(n=10):
+    news = (News
+            .select()
+            .group_by(News.update_time.desc())
+            .limit(10))
+    return news
+
+
 if __name__ == "__main__":
     # python -m oldcat.models.news
-
     News.create_table()

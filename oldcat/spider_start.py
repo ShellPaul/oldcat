@@ -18,7 +18,6 @@ logger = logging.getLogger(__name__)
 
 if __name__ == "__main__":
     # python -m oldcat.spider_start
-
     settings_key_chars = string.uppercase + "_"
     settings_dict = {k: v
                      for k, v in vars(settings_module).items()

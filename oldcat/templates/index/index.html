@@ -1,5 +1,11 @@
 {% extends "base.html" %}
 {% block title %}新闻速递{% endblock %}
 {% block body %}
-    <h1>nothing but good thing</h1>
+    <div class="col-md-8">
+        <ul>
+            {% for item in hot_news %}
+                <li><a href="{{ item.href }}">{{ item.title }}</a></li>
+            {% endfor %}
+        </ul>
+    </div>
 {% endblock %}
