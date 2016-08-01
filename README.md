@@ -14,9 +14,16 @@ More Traffic, More information
 启动命令
 ----
 ```python
+# 创建数据库配置文件
+python -m oldcat.octuils.db_connection.py
+vi oldcat/etc/oldcat_db.json
+
 # 创建新闻数据库
 python -m oldcat.models.news
 
 # 运行新闻 Spider
 python -m oldcat.spider_start
+
+# 设置新闻 Spider 的定时任务
+15 * * * * . /root/venv/oldcat/bin/activate; cd /root/workspace/oldcat; python -m oldcat.spider_start >log/oldcat.log 2>&1
 ```
