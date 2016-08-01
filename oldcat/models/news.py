@@ -8,7 +8,7 @@ class News(peewee.Model):
     id = peewee.PrimaryKeyField()
     frm = peewee.CharField(191, unique=True)
     title = peewee.CharField()
-    article = peewee.CharField(10240)
+    article = peewee.CharField(51200)
     keywords = peewee.CharField(default="")
     update_time = peewee.DateTimeField()
 

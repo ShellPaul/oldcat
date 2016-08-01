@@ -11,6 +11,7 @@ from scrapy import Spider
 from scrapy.http import Request
 
 from ..items import NewsItem
+from ...models.news import News
 
 logger = logging.getLogger(__name__)
 
@@ -64,14 +65,18 @@ class NewsSpider(Spider):
             return
         logger.info("parse toutiao page: %s" % response.url)
         html = etree.HTML(response.body)
-        item = NewsItem()
-        item['url'] = response.meta['frm']
-        item['title'] = html.xpath("//h1[@class='title']/text()")[0]
-        item['created'] = html.xpath("//span[@class='time']/text()")[0]
         texts = html.xpath("//div[@class='article-content']//p/text()")
         texts = filter(None, (text.strip() for text in texts))
         imgs = html.xpath("//div[@class='article-content']//p/img/@src")
         imgs = map(response.urljoin, filter(None, (src.strip() for src in imgs)))
-        item['content'] = json.dumps({"texts": texts, "imgs": imgs})
+        content = json.dumps({"texts": texts, "imgs": imgs})
+        if len(content) > News.article.max_length:
+            yield self.find_result(response.meta['pages'], response.meta['pos']+1)
+            return
+        item = NewsItem()
+        item['url'] = response.meta['frm']
+        item['title'] = html.xpath("//h1[@class='title']/text()")[0]
+        item['created'] = html.xpath("//span[@class='time']/text()")[0]
+        item['content'] = content
         # logger.info(json.dumps(dict(item), indent=4))
         yield item
