@@ -2,7 +2,10 @@
 
 import os
 import time
+import urlparse
+
 import flask
+
 from .views.index import app as index
 from .views.news import app as news
 from .models.news import all_news
@@ -29,9 +32,10 @@ def sitemap_xml():
             sitemap_xml = f.read()
     else:
         news = all_news()
-        pages = [("/news/%d/%d/%d/%d.html" %
-                  (one.update_time.year, one.update_time.month, one.update_time.day, one.id),
-                  one.update_time) for one in news]
+        pages = [(urlparse.urljoin(
+            flask.request.url_root,
+            "/news/%d/%d/%d/%d.html" % (one.update_time.year, one.update_time.month, one.update_time.day, one.id)
+        ), one.update_time) for one in news]
         sitemap_xml = flask.render_template("sitemap.xml", pages=pages)
         with open(cache_sitemap_xml, "w") as f:
             f.write(sitemap_xml)
