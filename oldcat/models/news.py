@@ -21,8 +21,14 @@ def hot_news(n=10):
     news = (News
             .select()
             .group_by(News.update_time.desc())
-            .limit(10))
+            .limit(n))
     return news
+
+
+def all_news():
+    return (News
+            .select()
+            .group_by(News.update_time.desc()))
 
 
 if __name__ == "__main__":
