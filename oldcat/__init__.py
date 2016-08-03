@@ -35,7 +35,7 @@ def sitemap_xml():
         pages = [(urlparse.urljoin(
             flask.request.url_root,
             "/news/%d/%d/%d/%d.html" % (one.update_time.year, one.update_time.month, one.update_time.day, one.id)
-        ), one.update_time) for one in news]
+        ), one.update_time.strftime("%Y-%m-%d")) for one in news]
         sitemap_xml = flask.render_template("sitemap.xml", pages=pages)
         with open(cache_sitemap_xml, "w") as f:
             f.write(sitemap_xml)
