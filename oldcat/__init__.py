@@ -42,3 +42,8 @@ def sitemap_xml():
     response = flask.make_response(sitemap_xml)
     response.headers["Content-Type"] = "application/xml"
     return response
+
+
+@app.errorhandler(404)
+def page_not_found(e):
+    return flask.render_template('404.html'), 404
