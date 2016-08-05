@@ -11,6 +11,9 @@ body {
 }
 
 .center {text-align: center; margin: 0 auto}
+.mt-5 {margin-top: 5px}
+.mt-10 {margin-top: 10px}
+.mt-15 {margin-top: 15px}
 .mt-20 {margin-top: 20px}
 .mt-50 {margin-top: 50px}
 .footer {
@@ -25,3 +28,9 @@ body {
 @media only screen and (min-width:960px){
     .container {width: 920px;}
 }
+
+#sitemap p{color: #777;}
+#sitemap p:hover{color: #555}
+#sitemap:link{text-decoration:none;}
+#sitemap:visited{text-decoration:none;}
+#sitemap:hover{text-decoration:none;}
