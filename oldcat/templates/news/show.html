@@ -3,7 +3,10 @@
 {% block body %}
     <div class="col-md-8 mt-20">
         <h2>{{ data.title }}</h2>
-        <div class="mt-20"></div>
+        <div class="mt-20 news-meta">
+            <span>{{ data.update_time }}</span>
+            <span class="ml-20">来源：互联网</span>
+        </div>
         {% for src in data.content.imgs %}
             <p><img class="img-responsive center-block center" src="{{ src }}" /></p>
         {% endfor %}

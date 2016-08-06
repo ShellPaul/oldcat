@@ -16,6 +16,8 @@ body {
 .mt-15 {margin-top: 15px}
 .mt-20 {margin-top: 20px}
 .mt-50 {margin-top: 50px}
+.ml-20 {margin-left: 20px}
+.news-meta {font-size: small; color: #999}
 .footer {
   position: absolute;
   bottom: 0;
